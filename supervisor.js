@@ -4,6 +4,7 @@ const path = require("path");
 const { END, START, StateGraph } = require("@langchain/langgraph");
 const { tool } = require("@langchain/core/tools");
 const { MemorySaver } = require("@langchain/langgraph");
+require('dotenv').config();
 
 const { DynamicStructuredTool  } = require("@langchain/core/tools")
 
@@ -19,7 +20,7 @@ const { StructuredOutputParser } = require("langchain/output_parsers");
 
 const { RunnableLambda } = require("@langchain/core/runnables");
 
-const WORKING_DIRECTORY = "./workspace";
+const WORKING_DIRECTORY = "./ggi-is";
 fs.mkdir(WORKING_DIRECTORY, { recursive: true });
 // Tools List
 const creatorFile = tool(
@@ -312,6 +313,7 @@ const run = async ()=>{
     
     const llm = new ChatOpenAI({ 
       modelName: "gpt-4o-mini",
+      apiKey:  process.env.OPENAI_API_KEY,
     });
     
     const creatorFileNode = async (state, config) => {
@@ -377,7 +379,7 @@ const run = async ()=>{
 
     const codeWriterNode = (state, config) => {
       const messageModifier = agentMessageModifier(
-        `Anda adalah seorang web developer handal yang bertugas untuk menulis kode pada path file yang diberikan, anda harus mengetahui file mana yang akan kamu edit atau tulis, jika belum ada file yang dimaksud minta dulu agen lain untuk membuatnya., gunakan tech stack HTML, CSS, Javascript dan bootstrap anda dapat menulis dari awal semua kode, update kode, atau menyisipkan kode baru, saat ini anda berada di relative path folder ./workspace 
+        `Anda adalah seorang web developer handal yang bertugas untuk menulis kode pada path file yang diberikan, anda harus mengetahui file mana yang akan kamu edit atau tulis, jika belum ada file yang dimaksud minta dulu agen lain untuk membuatnya., gunakan tech stack HTML, CSS, Javascript dan bootstrap anda dapat menulis dari awal semua kode, update kode, atau menyisipkan kode baru, saat ini anda berada di relative path folder ./ggi-is 
         Buatlah Model, View, Controller, Route untuk membangun sebuah project laravel, Berikut file yang berhasil dibuat oleh tim lain : 
         - models : ${state.model_path}
         - controllers : ${state.controller_path}
@@ -428,7 +430,7 @@ const run = async ()=>{
     const directoryChain = directoryGraph.compile({checkpointer });
     const streamResults = directoryChain.stream(
       {
-        messages: [new HumanMessage("Buat sebuah program crud data APPROVAL menggunakan laravel, sebelumnya saya memiliki kolom id, nama, alamat buat tampilannya menggunakan bootstrap")],
+        messages: [new HumanMessage("Buat sebuah program crud data HedonApps menggunakan laravel, sebelumnya saya memiliki kolom id, nama, alamat buat tampilannya menggunakan bootstrap")],
       },
       { 
         ...config,
